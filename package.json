@@ -1,5 +1,5 @@
 {
-  "name": "Node-TS-Jest-Boilerplate",
+  "name": "core",
   "version": "0.0.0",
   "description": "",
   "main": "dist/index.js",
@@ -12,7 +12,7 @@
     "typescript": "^3.9.3"
   },
   "scripts": {
-    "test": "npx jest",
+    "test": "jest",
     "build": "tsc",
     "build-and-test": "npm run build && npm run test"
   },

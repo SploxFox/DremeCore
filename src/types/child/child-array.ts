@@ -4,8 +4,10 @@ import { includes } from "../../util/arrays";
 export class ChildArray<P, I> implements ChildWithParent<P> {
     protected items: I[] = [];
 
-    constructor(readonly parent: P) {
-        
+    constructor(readonly parent: P, items?: I[]) {
+        if (items) {
+            this.items = items.slice();
+        }
     }
     
     add(...symbols: I[]) {
@@ -15,6 +17,10 @@ export class ChildArray<P, I> implements ChildWithParent<P> {
 
     remove(...items: I[]) {
         this.items = this.items.filter((item) => includes(items, item));
+    }
+
+    get array() {
+        return this.items.slice();
     }
 
     protected addOne(item: I) {
