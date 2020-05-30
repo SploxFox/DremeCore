@@ -1,9 +1,10 @@
 import { includes } from "./util/arrays";
 import { NoDuplicatesChildArray } from "./types/child/no-duplicates-child-array";
 import { ChildArray } from "./types/child/child-array";
-import { Nightmare } from "./types/nightmares";
-import { DremeTransformer } from "./types/transformer";
+import { Transformer } from "./types/transformer";
 import { DremeApplier } from "./types/application";
+import { Actions } from "./types/actions";
+import { TransformerApplier } from "./transformer-applier";
 
 /**
  * Zzzzz...
@@ -38,35 +39,8 @@ export class Dreme {
      * child.transform(...). Since Dremes are immutable, they are not modified.
      * @param transformer The transformation function (current: Dreme, next: Dreme) => Dreme | Nightmare
      */
-    transform(transformer: DremeTransformer): Dreme {
-        const oldDremes: Dreme[] = this.children.array;
-        const newDremes: Dreme[] = [];
-
-        let currentNewDreme;
-        for (let i = 0; i < oldDremes.length; i++) {
-            const currentOldDreme = oldDremes[i];
-    
-            if (!currentNewDreme) {
-                currentNewDreme = new Dreme();
-            }
-            const next = transformer(currentNewDreme, currentOldDreme)
-    
-            if (next === Nightmare.END_OF_DREME || next === Nightmare.INCLUDE_AND_END || next === Nightmare.CONSUME_AND_END) {
-                if (next === Nightmare.INCLUDE_AND_END) {
-                    currentNewDreme = currentNewDreme.children.add(currentOldDreme);
-                } else if (next == Nightmare.END_OF_DREME) {
-                    i--
-                }
-
-                newDremes.push(currentNewDreme);
-                currentNewDreme = undefined;
-            }
-        }
-        if (currentNewDreme) {
-            newDremes.push(currentNewDreme);
-        }
-    
-        return new Dreme(newDremes);
+    transform(transformer: Transformer): Dreme {
+        return TransformerApplier.apply(transformer, this);
     }
 
     apply (applier: DremeApplier) {
@@ -87,7 +61,3 @@ export class Dreme {
         return new Dreme(dremes);
     }
 }
-
-
-
-

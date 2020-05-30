@@ -1,16 +1,15 @@
-import { DremeTransformer } from "./types/transformer";
-import { Nightmare } from "./types/nightmares";
+import { Transformer } from "./types/transformer";
 import { Dreme } from ".";
 
 test("Testing transformer", () => {
-    const tokenizeStrings: DremeTransformer = (current, next) => {
+    const tokenizeStrings: Transformer = (current, next, actions) => {
         if (current.is("string")) {
             if (current.is("nextEscaped")) {
-                return current.children.add(next);
+                return actions.add(next);
             } else if (next.text === "\\") {
                 return current.identities.add("nextEscaped");
             } else if (next.text === '"') {
-                return Nightmare.CONSUME_AND_END;
+                return actions.end();
             } else {
                 return current.children.add(next);
             }
